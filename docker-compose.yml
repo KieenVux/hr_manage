@@ -1,6 +1,18 @@
 version: '3.5'
 
 services:
+  hr-manage:
+    image: hr-manage
+    container_name: hr-manage
+    restart: always
+    build:
+        context: .
+        dockerfile: Dockerfile
+    networks:
+      - postgres
+    ports:
+      - "8080:8080"
+
   postgres:
     container_name: postgres_container
     image: postgres
@@ -12,22 +24,6 @@ services:
        - postgres:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - postgres
-    restart: unless-stopped
-
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-       - pgadmin:/var/lib/pgadmin
-
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
     networks:
       - postgres
     restart: unless-stopped

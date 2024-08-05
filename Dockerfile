@@ -1,11 +1,5 @@
-# Use the official PHP image as a parent image
-FROM php:8.1-fpm
-
-# Set working directory
-WORKDIR /hr_manage
-
-# Install system dependencies
-RUN sudo apt-get update && sudo apt-get install -y \
+FROM php:8.2-fpm
+RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -20,22 +14,15 @@ RUN sudo apt-get update && sudo apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    libmcrypt-dev \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo mbstring zip exif pcntl gd
-
-# Clear cache
-RUN sudo apt-get clean
-
-# Install Composer
+    && docker-php-ext-install pdo pdo_pgsql pgsql mbstring zip exif pcntl gd
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN docker-php-ext-install pdo
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+COPY . /app
+RUN composer install
 
-# Copy existing application directory contents
-COPY . /hr_manage
-
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /hr_manage
-
-# Expose port 9000 and start php-fpm server
+CMD  php artisan serve --host=0.0.0.0 --port=8080
 EXPOSE 8080
-CMD ["sudo php artisan serve --host=0.0.0.0 --port=8080"]

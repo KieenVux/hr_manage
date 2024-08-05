@@ -75,9 +75,9 @@
                         </div>
                         <div class="modal-body">
                             <p style="text-align: center;">
-                                Are You Confirm To Update Staff ID: {{$staff->id}} <br>
+                                Are You Confirm To Update Staff ID: {{$staff->id}}
                             </p>
-                            <p id="output"/>
+                            <p style="text-align: center;" id="output"/>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
